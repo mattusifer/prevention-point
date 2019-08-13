@@ -21,6 +21,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'gz!+^ra#d*j&rpq@^udd89hwzq7%z%%!c=pgl)wac!+rcp8+d-'
 
+# Set up websocket application
+ASGI_APPLICATION = "core.urls.channels"
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -42,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'channels',
     'core',
     'rest_framework_swagger',
 ]

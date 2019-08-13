@@ -18,6 +18,8 @@ from django.urls import include, path
 from rest_framework import routers
 from rest_framework_swagger.views import get_swagger_view
 from rest_framework_simplejwt import views as jwt_views
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
 
 from core.users import views as user_views
 from core.urine_drug_screens import views as uds_views
@@ -44,6 +46,15 @@ router.register(r'services', services_views.ServiceViewSet)
 
 schema_view = get_swagger_view(title='PreventionPoint API')
 
+channels = ProtocolTypeRouter({
+    # Empty for now (http->django views is added by default)
+    'websocket': AuthMiddlewareStack(
+        URLRouter(
+            chat.routing.websocket_urlpatterns
+        )
+    ),
+})
+
 urlpatterns = [
     path('api/', include(router.urls)),
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -53,4 +64,8 @@ urlpatterns = [
     # above only 'registers' the retrieve path. to use other CRUD actions, must pass that explicitly to .as_view in another register
     path('swagger/', schema_view),
     path('admin/', admin.site.urls),
+]
+
+websocket_urlpatterns = [
+    url(r'^ws/front-desk/$', consumers.FrontDeskConsumer),
 ]
